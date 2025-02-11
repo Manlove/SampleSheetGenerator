@@ -2,3 +2,4 @@ work/
 results/
 FASTQ/
 .nextflow*
+samplesheet.csv

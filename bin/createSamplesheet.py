@@ -22,6 +22,9 @@ class SingleRead():
 
     def GetReads(self):
         return self.files
+    
+    def GetName(self):
+        return self.sample_name
 
 class ReadPair(SingleRead):
     def __init__(self, file_path, sample_name, basename, read_match):
@@ -47,7 +50,7 @@ class ReadPair(SingleRead):
 fastq_files = {}
 
 # get a list of all files in the path with the given pattern 
-for i in glob.glob(os.path.join(fastq_path,"lung*")):
+for i in glob.glob(os.path.join(fastq_path,"*")):
     fastq_file = list(os.path.splitext(i))
     fastq_directory = os.path.dirname(i)
     
@@ -81,10 +84,13 @@ for i in glob.glob(os.path.join(fastq_path,"lung*")):
             fastq_files[basename].AddFile(fastq_directory,basename)
         else:
             fastq_files[basename] = SingleRead(fastq_directory,sample_name,basename)
-  
-for i in fastq_files:
 
-    print(fastq_files[i].GetReads())
+with open("samplesheet.csv","w") as out_file:
+    out_file.write("sample,fastq1,fastq2")
+    for sample in fastq_files:
+        reads = fastq_files[sample].GetReads()
+        sample_name = fastq_files[sample].GetName()
+        out_file.write("\n{},{},{}".format(sample_name,reads[0],reads[1]))
 
 def CheckExtension(fastqFile):
     pass
